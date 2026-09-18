@@ -86,7 +86,7 @@ export const DATA = {
       location: "Remote",
       title: "AI Engineer Intern",
       logoUrl:
-        "https://eternoglobaltechnologies.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-with-text-2.b400f7df.png&w=384&q=75",
+        "/work/egt.png",
       start: "Jan 2026",
       end: "May 2026",
       description:
