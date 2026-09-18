@@ -176,7 +176,7 @@ export const DATA = {
     },
     {
       title: "Pixelaid",
-      href: "#",
+      href: "https://github.com/manikandareas/technofest2026",
       dates: "2026",
       active: true,
       description:
@@ -185,9 +185,10 @@ export const DATA = {
         "TypeScript",
         "Next.js",
         "Python",
-        "Elysia",
+        "FastAPI",
         "LiveKit",
         "Gemini",
+        "Openai",
       ],
       links: [
           {
@@ -195,13 +196,18 @@ export const DATA = {
           href: "https://github.com/manikandareas/technofest2026",
           icon: <Icons.github className="size-3" />,
         },
+          {
+          type: "Blog",
+          href: "/blog/pixelaid",
+          icon: <Icons.globe className="size-3" />,
+        },
       ],
       image: "/projects/pixelaid.webp",
       video: "",
     },
     {
       title: "Lana",
-      href: "#",
+      href: "https://github.com/manikandareas/lana",
       dates: "2026",
       active: true,
       description:
@@ -258,18 +264,13 @@ export const DATA = {
     },
     {
       title: "Madia Blog",
-      href: "https://madia.vitomanik.com/",
+      href: "https://github.com/manikandareas/Madia",
       dates: "2024",
       active: true,
       description:
         "A developer-focused article platform inspired by dev.to, built with Nuxt 3 and Supabase.",
       technologies: ["Nuxt.js", "Vue.js", "TypeScript", "Supabase"],
       links: [
-        {
-          type: "Website",
-          href: "https://madia.vitomanik.com/",
-          icon: <Icons.globe className="size-3" />,
-        },
         {
           type: "Source",
           href: "https://github.com/manikandareas/Madia",

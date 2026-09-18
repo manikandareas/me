@@ -1,0 +1,283 @@
+---
+
+title: "Pixeaid: Membuat Simulasi Pasien AI Terasa Seperti Game"
+publishedAt: "2026-09-18"
+summary: "Bagaimana tim kami membangun simulasi pasien berbasis AI dalam 24 jam, dengan percakapan real-time, pemeriksaan medis, dan evaluasi yang tetap terasa fun."
+image: "/images/blog/pixeaid/cover.webp"
+---
+
+## Bagaimana Kami Membuat Simulasi Pasien Medis Terasa Seperti Game?
+
+Pixeaid dibuat dalam waktu **24 jam** untuk sebuah hackathon pada tahun 2026.
+
+Kami membawa problem yang cukup serius: **bagaimana mahasiswa kedokteran bisa berlatih berinteraksi dengan pasien dalam situasi yang terasa mendekati dunia nyata, tanpa harus selalu menunggu sesi simulasi langsung?**
+
+Daripada membuat simulasi medis yang terasa kaku atau terlalu formal, kami mengambil arah yang berbeda.
+
+Kami membuatnya seperti **game pixel-art**.
+
+Bukan untuk membuat problem-nya terlihat ringan, tapi supaya proses belajarnya terasa lebih nyaman, approachable, dan menyenangkan.
+
+Tim kami terdiri dari:
+
+* Made — UI/UX
+* Fayad — UI/UX
+* Sammy — Researcher
+* Abizar — Researcher
+* Aku — Full-stack Developer
+
+Dalam project ini aku menangani implementasi frontend, backend, AI integration, real-time voice, sampai deployment.
+
+<MediaContainer
+  src="/images/blog/pixelaid/pixelaid-tim.png"
+  alt="Pixelaid tim"
+/>
+
+## Dari Kasus Pasien sampai Evaluasi
+
+Flow Pixeaid dirancang menyerupai proses interaksi medis, tapi tetap sederhana untuk digunakan.
+
+```text
+Pilih Kasus Pasien
+      ↓
+Masuk Ruangan
+      ↓
+Baca Rekam Medis
+      ↓
+Ngobrol dengan Pasien
+      ↓
+Request Pemeriksaan
+      ↓
+Quiz Singkat
+      ↓
+Evaluasi
+```
+
+User memilih satu kasus pasien, membaca rekam medis awal, lalu masuk ke sesi percakapan.
+
+Selama percakapan, user bisa menggali gejala, riwayat penyakit, kondisi pasien, dan informasi lain yang relevan.
+
+Kalau dibutuhkan, user juga bisa meminta pemeriksaan tambahan seperti **X-ray** atau pemeriksaan lain.
+
+Setelah sesi selesai, Pixeaid tidak hanya berhenti di percakapan.
+
+User juga mendapatkan evaluasi dari beberapa bagian:
+
+* bagaimana percakapan dilakukan,
+* apakah pemeriksaan yang diminta memang relevan,
+* dan bagaimana hasil quiz setelah sesi.
+
+{/* Image: Main gameplay flow */}
+
+Menurutku bagian ini penting.
+
+Kalau aplikasi cuma membiarkan user ngobrol dengan AI tanpa feedback, pengalaman belajarnya akan terasa setengah jadi.
+
+Simulasi baru punya value kalau user tahu **apa yang sudah dilakukan dengan benar dan bagian mana yang masih perlu diperbaiki**.
+
+## Membuat Pasien AI yang Terasa Seperti Pasien
+
+Setiap NPC di Pixeaid tidak sekadar diberi nama lalu disuruh menjawab pertanyaan.
+
+Masing-masing punya persona sendiri.
+
+Mereka memiliki:
+
+* medical history,
+* gejala,
+* emosi,
+* karakter,
+* dan informasi yang hanya relevan terhadap kasus tertentu.
+
+Aku juga menambahkan guardrails untuk menjaga conversation tetap berada dalam konteks.
+
+Kalau user bertanya sesuatu yang tidak relevan atau di luar pengetahuan pasien, NPC tidak akan tiba-tiba menjadi dokter, ensiklopedia, atau chatbot serba tahu.
+
+Ia akan menjawab seperti pasien biasa.
+
+Contohnya:
+
+> "Maaf dok, saya tidak tahu."
+
+Decision ini kelihatannya sederhana, tapi penting untuk menjaga immersion.
+
+Kalau pasien tiba-tiba menjelaskan diagnosis lengkapnya sendiri, ya simulasi selesai sebelum dimulai.
+
+## Real-Time Conversation
+
+Fitur yang paling menarik secara teknis adalah percakapan dengan pasien.
+
+Aku ingin experience-nya terasa seperti percakapan langsung, bukan:
+
+```text
+Record Audio
+    ↓
+Upload
+    ↓
+Wait
+    ↓
+AI Response
+```
+
+Karena itu aku menggunakan **LiveKit** untuk mengelola real-time audio streaming antara user dan AI voice agent.
+
+Secara sederhana:
+
+```text
+User Voice
+    ↓
+LiveKit
+    ↓
+Voice Agent
+    ↓
+Gemini
+    ↓
+Patient Response
+    ↓
+Live Audio
+```
+
+Dengan pendekatan ini, user dan pasien AI bisa saling berbicara dengan delay yang sangat kecil.
+
+{/* Image: Realtime voice architecture */}
+
+Untuk backend application API, aku menggunakan **FastAPI**, sementara interface utama dibangun menggunakan **Next.js dan TypeScript**.
+
+Aku sengaja memisahkan application API dengan voice agent supaya masing-masing punya responsibility yang jelas.
+
+```text
+Next.js App
+    ↓
+FastAPI
+    ↓
+Application Data / Evaluation
+
+LiveKit
+    ↓
+Python Voice Agent
+    ↓
+Gemini
+```
+
+Dengan pemisahan ini, logic aplikasi tidak harus hidup di dalam lifecycle voice session.
+
+## Tantangan: Kapan AI Harus Berhenti Mendengar?
+
+Real-time voice ternyata bukan cuma soal streaming audio.
+
+Salah satu masalah paling menyebalkan selama development adalah **interruption**.
+
+Kadang user belum selesai bicara, tapi sistem menganggap kalimatnya sudah selesai dan AI mulai menjawab.
+
+Misalnya user berkata:
+
+> "Saya mau tanya, apakah rasa sakitnya..."
+
+lalu berhenti sebentar karena sedang berpikir.
+
+Kalau voice agent terlalu agresif mendeteksi akhir ucapan, pasien langsung menjawab padahal pertanyaannya belum selesai.
+
+Hasilnya terasa sangat tidak natural.
+
+Problem-nya akhirnya bukan lagi cuma:
+
+**"Bagaimana mengirim audio secara real-time?"**
+
+Tapi:
+
+**"Bagaimana menentukan kapan user benar-benar selesai berbicara?"**
+
+Ada trade-off di sini.
+
+Kalau terlalu cepat, AI sering memotong user.
+
+Kalau terlalu lambat, conversation terasa berat karena agent terlalu lama menunggu.
+
+Dan karena kami hanya punya 24 jam, menemukan balance yang cukup nyaman menjadi salah satu bagian paling tricky dari project ini.
+
+## Fun, Tapi Tetap Serius
+
+Salah satu decision yang paling aku suka dari Pixeaid justru bukan berasal dari sisi teknis.
+
+Kami sengaja menggunakan **pixel-art style**.
+
+Medical simulation biasanya identik dengan interface yang formal dan serius.
+
+Tapi kami ingin user merasa sedang masuk ke sebuah environment yang lebih ringan tanpa menghilangkan struktur simulasi.
+
+Pixel-art membantu membuat experience lebih approachable.
+
+Namun di balik visual yang fun, flow-nya tetap mempertahankan elemen yang penting:
+
+```text
+Medical Record
++
+Conversation
++
+Clinical Examination
++
+Quiz
++
+Evaluation
+```
+
+Jadi gamification tidak menggantikan learning experience.
+
+Gamification dipakai untuk membuat learning experience tersebut **lebih nyaman untuk dijalani**.
+
+{/* Image: Pixel room / patient interaction */}
+
+## Membangun Semuanya dalam 24 Jam
+
+Karena ini hackathon, salah satu constraint terbesar kami tentu saja waktu.
+
+Aku tidak punya kemewahan untuk membangun arsitektur yang sempurna.
+
+Aku harus menentukan bagian mana yang benar-benar penting untuk membuat pengalaman utamanya bekerja.
+
+Prioritasku adalah:
+
+```text
+1. Core simulation flow
+2. Real-time patient conversation
+3. Patient persona & guardrails
+4. Examination request
+5. Evaluation
+6. Visual polish
+```
+
+Ini juga memengaruhi banyak keputusan teknis.
+
+Daripada mencoba membuat terlalu banyak fitur, aku lebih memilih memastikan core loop-nya terasa lengkap:
+
+**masuk kasus → berinteraksi → mengambil keputusan → mendapatkan feedback.**
+
+Buatku, project hackathon yang punya sedikit fitur tapi flow-nya selesai jauh lebih menarik daripada sepuluh fitur yang semuanya setengah matang.
+
+## Yang Aku Pelajari dari Pixeaid
+
+Pixeaid menjadi salah satu project yang mengingatkanku bahwa user experience dan technical implementation tidak bisa dipisahkan.
+
+Secara teknis kami bisa saja membuat chatbot medis biasa.
+
+Tapi itu tidak akan memberikan experience yang sama.
+
+Real-time voice penting karena conversation harus terasa natural.
+
+Persona penting karena pasien harus tetap berada di dalam perannya.
+
+Guardrails penting karena realism langsung rusak kalau AI menjawab sesuatu yang seharusnya tidak diketahui pasien.
+
+Evaluation penting karena user membutuhkan feedback setelah simulasi.
+
+Dan pixel-art penting karena kami ingin learning experience yang cukup berat terasa lebih approachable.
+
+Semua decision itu mengarah ke satu tujuan yang sama:
+
+**membuat mahasiswa kedokteran merasa sedang berinteraksi dengan pasien, bukan sedang menguji chatbot.**
+
+Setelah 24 jam development, Pixeaid berhasil membawa tim kami meraih **juara 3**.
+
+Tapi bagian yang paling menarik buatku bukan hasil lombanya.
+
+Project ini menunjukkan bagaimana AI, real-time communication, product design, dan gamification bisa digabungkan untuk membuat pengalaman belajar yang terasa jauh lebih hidup.
