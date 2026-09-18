@@ -12,14 +12,18 @@ function ProjectImage({ src, alt }: { src: string; alt: string }) {
   const [imageError, setImageError] = useState(false);
 
   if (!src || imageError) {
-    return <div className="w-full h-48 bg-muted" />;
+    return (
+      <div className="flex h-full min-h-56 items-center justify-center bg-muted px-6 text-center text-sm font-medium text-muted-foreground">
+        Preview unavailable
+      </div>
+    );
   }
 
   return (
     <img
       src={src}
       alt={alt}
-      className="w-full h-48 object-cover"
+      className="h-full min-h-56 w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
       onError={() => setImageError(true)}
     />
   );
@@ -57,16 +61,16 @@ export function ProjectCard({
   return (
     <div
       className={cn(
-        "flex flex-col h-full border border-border rounded-xl overflow-hidden hover:ring-2 cursor-pointer hover:ring-muted transition-all duration-200",
+        "group grid h-full overflow-hidden rounded-2xl border border-border bg-card transition-all duration-300 hover:-translate-y-0.5 hover:border-foreground/20 hover:shadow-[0_16px_40px_-24px_rgba(0,0,0,0.45)] md:grid-cols-[minmax(15rem,0.8fr)_minmax(0,1.2fr)]",
         className
       )}
     >
-      <div className="relative shrink-0">
+      <div className="relative min-h-56 overflow-hidden bg-muted md:col-start-1 md:row-start-1 md:min-h-full">
         <Link
           href={href || "#"}
           target="_blank"
           rel="noopener noreferrer"
-          className="block"
+          className="block h-full"
         >
           {video ? (
             <video
@@ -75,12 +79,14 @@ export function ProjectCard({
               loop
               muted
               playsInline
-              className="w-full h-48 object-cover"
+              className="h-full min-h-56 w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
             />
           ) : image ? (
             <ProjectImage src={image} alt={title} />
           ) : (
-            <div className="w-full h-48 bg-muted" />
+            <div className="flex h-full min-h-56 items-center justify-center bg-muted px-6 text-center text-sm font-medium text-muted-foreground">
+              Preview unavailable
+            </div>
           )}
         </Link>
         {links && links.length > 0 && (
@@ -105,31 +111,33 @@ export function ProjectCard({
           </div>
         )}
       </div>
-      <div className="p-6 flex flex-col gap-3 flex-1">
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex flex-col gap-1">
-            <h3 className="font-semibold">{title}</h3>
-            <time className="text-xs text-muted-foreground">{dates}</time>
+      <div className="flex min-w-0 flex-col justify-between gap-7 p-5 sm:p-7 md:col-start-2 md:row-start-1">
+        <div className="flex flex-1 flex-col gap-5">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex min-w-0 flex-col gap-2">
+              <h3 className="truncate text-xl font-semibold tracking-tight sm:text-2xl">{title}</h3>
+              <time className="text-sm tabular-nums text-muted-foreground">{dates}</time>
+            </div>
+            <Link
+              href={href || "#"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex size-9 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-foreground/30 hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              aria-label={`Open ${title}`}
+            >
+              <ArrowUpRight className="size-4" aria-hidden />
+            </Link>
           </div>
-          <Link
-            href={href || "#"}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
-            aria-label={`Open ${title}`}
-          >
-            <ArrowUpRight className="h-4 w-4" aria-hidden />
-          </Link>
-        </div>
-        <div className="text-xs flex-1 prose max-w-full text-pretty font-sans leading-relaxed text-muted-foreground dark:prose-invert">
-          <Markdown>{description}</Markdown>
+          <div className="prose max-w-[65ch] flex-1 text-pretty font-sans text-sm leading-relaxed text-muted-foreground dark:prose-invert sm:text-base">
+            <Markdown>{description}</Markdown>
+          </div>
         </div>
         {tags && tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-auto">
+          <div className="flex flex-wrap gap-1.5 border-t border-border/70 pt-4">
             {tags.map((tag) => (
               <Badge
                 key={tag}
-                className="text-[11px] font-medium border border-border h-6 w-fit px-2"
+                className="h-7 w-fit border-border bg-transparent px-2.5 text-xs font-medium text-muted-foreground transition-colors group-hover:border-foreground/20 group-hover:text-foreground"
                 variant="outline"
               >
                 {tag}
