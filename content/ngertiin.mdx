@@ -1,0 +1,484 @@
+---
+title: "Ngerti.in: Building an AI Learning Companion"
+publishedAt: "2026-09-18"
+summary: "How a 24-hour hackathon project evolved into an AI-powered learning companion with adaptive learning paths and durable AI workflows."
+image: "/images/blog/ngertiin/cover.webp"
+---
+
+<ProjectLinks
+  website="https://ngertiin.whoismanik.dev"
+  repository="https://github.com/manikandareas/ngertiin"
+/>
+
+Ngerti.in bermula dari **24 jam** yang aku habiskan bersama [Farhan](https://www.linkedin.com/in/farhan-dwi-hartanto-8074ba292/) dan [Alvin](https://www.linkedin.com/in/muhammad-alvin-nugraha-sujana/) di hackathon pertama kami.
+
+Masalah yang kami bawa sederhana: materi kuliah sering kali banyak, tersebar, dan tidak selalu mudah dipahami hanya dengan membacanya berulang kali.
+
+Dari sana kami membuat versi pertama Ngerti.in, sebuah alat sederhana untuk mengubah materi menjadi kuis. Project itu membawa kami pulang sebagai **juara 3**, tapi setelah hackathon selesai aku merasa kuis saja belum cukup.
+
+Aku ingin Ngerti.in berkembang dari sekadar **AI quiz generator** menjadi **learning companion**.
+
+<MediaContainer
+  src="/images/blog/ngertiin/cover.webp"
+  alt="Devfest competition"
+/>
+
+## From Material to Learning Path
+
+Saat ini Ngerti.in dapat mengubah materi user menjadi modul pembelajaran yang terstruktur menggunakan AI.
+
+Daripada memberikan satu jawaban panjang seperti chatbot, materi dipecah menjadi beberapa konsep dan disusun menjadi sebuah learning path.
+
+Tujuannya adalah mengurangi satu beban kecil tetapi penting:
+
+> "Aku harus mulai belajar dari mana?"
+
+Aku lebih tertarik menggunakan AI untuk **mengatur proses belajar**, bukan hanya menghasilkan lebih banyak teks.
+
+<MediaContainer
+  src="/images/blog/ngertiin/journey.png"
+  alt="Ngertiin Journey"
+/>
+
+## Making Learning Adaptive
+
+Learning path pertama tentu tidak selalu cocok untuk semua orang.
+
+Karena itu aku mulai mengembangkan **adaptive learning path**. Ketika user terlihat kesulitan pada suatu konsep, sistem dapat menambahkan node baru berupa konsep pendukung atau penjelasan yang lebih sederhana.
+
+```text id="q6n01v"
+Concept A
+   ↓
+Concept B
+   ↓
+Supporting Concept
+   ↓
+Concept C
+```
+
+Di titik ini problem-nya mulai berubah.
+
+Bukan lagi hanya:
+
+**"Bagaimana menghasilkan konten dengan AI?"**
+
+Tetapi:
+
+**"Bagaimana sistem tahu kapan harus membantu, bantuan apa yang dibutuhkan, dan bagaimana memasukkannya ke learning journey tanpa mengganggu user?"**
+
+Pertanyaan itu yang kemudian mendorong Ngerti.in menuju pendekatan yang lebih agentic.
+
+<MediaContainer
+  src="/images/blog/ngertiin/adaptive.png"
+  alt="Ngertiin Adaptive"
+/>
+
+## Why NestJS
+
+Backend Ngerti.in dibangun menggunakan **NestJS**.
+
+Aku memilihnya karena aku tahu scope project ini akan terus berkembang: material processing, learning modules, progress tracking, AI workflows, hingga agent state.
+
+NestJS memang lebih verbose dibanding framework yang lebih minimal, tetapi convention seperti modules, providers, dependency injection, dan separation of concerns membuat codebase jauh lebih mudah dijaga ketika fitur bertambah.
+
+Buatku trade-off-nya sederhana:
+
+**sedikit lebih banyak struktur sekarang, jauh lebih sedikit kekacauan nanti.**
+
+## Why LangChain and LangGraph
+
+Untuk AI workflow aku menggunakan **LangChain** dan **LangGraph**.
+
+LangChain kupilih karena ekosistemnya matang dan mempermudah integrasi berbagai komponen AI.
+
+Sementara LangGraph menarik karena workflow yang kompleks dapat direpresentasikan sebagai graph.
+
+```text id="si2xbg"
+Material
+   ↓
+Analyze
+   ↓
+Generate Structure
+   ↓
+Generate Nodes
+   ↓
+Validate
+   ↓
+Persist
+```
+
+Ketika ada branching atau state yang berubah, alurnya tetap mudah dibaca dan dikembangkan.
+
+Tapi alasan paling penting bagiku adalah **durable execution**.
+
+Beberapa proses AI membutuhkan waktu cukup lama. Aku tidak ingin proses tersebut gagal hanya karena user refresh halaman atau kehilangan koneksi.
+
+Dengan checkpoint yang disimpan secara persisten, workflow dapat melanjutkan proses dari state terakhir.
+
+```text id="8xqh38"
+Start
+  ↓
+Checkpoint A
+  ↓
+Generate
+  ↓
+Checkpoint B
+  ↓
+Connection lost
+
+...
+
+Reconnect
+  ↓
+Resume from B
+```
+
+Menurutku AI application yang benar-benar dipakai user harus tetap masuk akal di kondisi yang tidak sempurna, bukan hanya saat demo berjalan mulus.
+
+```typescript
+private buildGraph() {
+  return new StateGraph(WorkflowState, WorkflowContext)
+    .addNode("extract_sources", async (state, runtime) => {
+      const chunks = runtime.context?.chunks;
+
+      if (!chunks?.length) invalidContext("extract_sources");
+
+      await this.modules.beginStep(
+        state.generationRunId,
+        "extract_sources",
+      );
+
+      const descriptors = chunks.map(
+        ({ content: _content, ...descriptor }) => descriptor,
+      );
+
+      await this.modules.completeStep(
+        state.generationRunId,
+        "extract_sources",
+        {
+          chunkCount: descriptors.length,
+        },
+      );
+
+      await this.modules.beginStep(
+        state.generationRunId,
+        "analyze_material",
+      );
+
+      return { chunks: descriptors };
+    })
+
+    .addNode(
+      "analyze_chunk",
+      async (state, runtime) => ({
+        chunkAnalyses: {
+          chunkId: state.chunk.id,
+          analysis: await this.ai.generateObject(
+            buildChunkAnalysisRequest(
+              state.chunk,
+              runtime.context?.instruction ?? null,
+              runtime.context?.generationSettings ?? null,
+            ),
+          ),
+        },
+      }),
+      { input: ChunkWorkerState },
+    )
+
+    .addNode("reduce_material", async (state, runtime) => {
+      const chunks = runtime.context?.chunks;
+
+      if (!chunks?.length) invalidContext("analyze_material");
+
+      const analysis = await this.ai.generateObject(
+        buildMaterialReductionRequest(
+          chunks,
+          state.chunkAnalyses,
+          runtime.context?.instruction ?? null,
+          runtime.context?.generationSettings ?? null,
+        ),
+      );
+
+      await this.modules.completeStep(
+        state.generationRunId,
+        "analyze_material",
+        {
+          chunkCount: chunks.length,
+        },
+      );
+
+      return { materialAnalysis: analysis };
+    })
+
+    .addNode("create_concepts", async (state, runtime) => {
+      if (!state.materialAnalysis) {
+        invalidContext("create_concepts");
+      }
+
+      await this.modules.beginStep(
+        state.generationRunId,
+        "create_concepts",
+      );
+
+      const conceptMap = await this.ai.generateObject(
+        buildConceptMapRequest(
+          state.materialAnalysis,
+          runtime.context?.instruction ?? null,
+          runtime.context?.generationSettings ?? null,
+        ),
+      );
+
+      await this.modules.completeStep(
+        state.generationRunId,
+        "create_concepts",
+        {
+          conceptCount: conceptMap.concepts.length,
+        },
+      );
+
+      return { conceptMap };
+    })
+
+    .addNode("create_curriculum", async (state, runtime) => {
+      if (!state.materialAnalysis || !state.conceptMap) {
+        invalidContext("create_curriculum");
+      }
+
+      await this.modules.beginStep(
+        state.generationRunId,
+        "create_curriculum",
+      );
+
+      const curriculum = await this.ai.generateObject(
+        buildCurriculumRequest(
+          state.materialAnalysis,
+          state.conceptMap,
+          runtime.context?.instruction ?? null,
+          runtime.context?.generationSettings ?? null,
+        ),
+      );
+
+      await this.modules.completeStep(
+        state.generationRunId,
+        "create_curriculum",
+        {
+          nodeCount: curriculum.nodes.length,
+        },
+      );
+
+      return { curriculum };
+    })
+
+    .addNode("generate_activity", async (state, runtime) => {
+      const chunks = runtime.context?.chunks;
+      const node =
+        state.curriculum?.nodes[state.activityIndex];
+
+      if (
+        !chunks?.length ||
+        !state.conceptMap ||
+        !state.curriculum ||
+        !node
+      ) {
+        invalidContext("generate_activities");
+      }
+
+      await this.modules.beginStep(
+        state.generationRunId,
+        "generate_activities",
+      );
+
+      const output = await this.ai.generateObject(
+        buildActivityGenerationRequest(
+          node,
+          state.conceptMap,
+          chunks,
+          runtime.context?.instruction ?? null,
+          runtime.context?.generationSettings ?? null,
+        ),
+      );
+
+      const completed = state.activityIndex + 1;
+
+      const enriched = await this.lessonImages.enrich(
+        output,
+        state.generationRunId,
+        node.key,
+      );
+
+      const activities = {
+        ...state.activities,
+        [node.key]: enriched,
+      };
+
+      await this.modules.updateActivityProgress(
+        state.generationRunId,
+        completed,
+        state.curriculum.nodes.length,
+      );
+
+      if (completed === state.curriculum.nodes.length) {
+        await this.modules.completeStep(
+          state.generationRunId,
+          "generate_activities",
+          {
+            nodeCount: completed,
+          },
+        );
+      }
+
+      return {
+        activities,
+        activityIndex: completed,
+      };
+    })
+
+    .addNode("validate_module", async (state) => {
+      if (!state.conceptMap || !state.curriculum) {
+        invalidContext("validate_module");
+      }
+
+      await this.modules.beginStep(
+        state.generationRunId,
+        "validate_module",
+      );
+
+      await this.modules.finalizeModule(
+        {
+          generationRunId: state.generationRunId,
+          moduleId: state.moduleId,
+          generationRequestId: state.generationRequestId,
+        },
+        state.conceptMap,
+        state.curriculum,
+        state.activities,
+      );
+
+      return {};
+    })
+
+    .addEdge(START, "extract_sources")
+
+    .addConditionalEdges(
+      "extract_sources",
+      (state, config) => {
+        const analyzed = new Set(
+          Object.keys(state.chunkAnalyses),
+        );
+
+        const pending = state.chunks.filter(
+          (chunk) => !analyzed.has(chunk.id),
+        );
+
+        const contentById = new Map(
+          config.context?.chunks.map((chunk) => [
+            chunk.id,
+            chunk,
+          ]),
+        );
+
+        if (pending.length === 0) {
+          return "reduce_material";
+        }
+
+        return pending.map((descriptor) => {
+          const chunk = contentById.get(descriptor.id);
+
+          if (!chunk) {
+            invalidContext("analyze_material");
+          }
+
+          return new Send("analyze_chunk", {
+            generationRunId: state.generationRunId,
+            chunk,
+          });
+        });
+      },
+    )
+
+    .addEdge("analyze_chunk", "reduce_material")
+    .addEdge("reduce_material", "create_concepts")
+    .addEdge("create_concepts", "create_curriculum")
+    .addEdge("create_curriculum", "generate_activity")
+
+    .addConditionalEdges(
+      "generate_activity",
+      (state) =>
+        state.curriculum &&
+        state.activityIndex < state.curriculum.nodes.length
+          ? "generate_activity"
+          : "validate_module",
+    )
+
+    .addEdge("validate_module", END)
+
+    .compile({
+      checkpointer: this.checkpointer,
+      name: "module-generation",
+    });
+}
+```
+
+## AI Is Not Always a Chatbox
+
+Satu prinsip yang aku pegang saat membangun Ngerti.in adalah: **tidak semua fitur AI harus menjadi chat.**
+
+Untuk belajar, kadang visual learning path lebih berguna daripada percakapan. Kadang user hanya butuh latihan singkat. Kadang mereka hanya perlu membaca.
+
+Karena itu aku melihat AI sebagai **engine di belakang pengalaman**, bukan interface utama.
+
+AI membantu memahami materi, menyusun struktur, menghasilkan latihan, dan menentukan kapan user membutuhkan bantuan tambahan.
+
+User tidak perlu tahu ada beberapa model call atau agent di belakang layar.
+
+Mereka cukup merasa:
+
+**"Aku tahu harus belajar apa selanjutnya."**
+
+## Feedback That Led to Lana
+
+Salah satu feedback paling menarik dari user adalah bahwa beberapa dari mereka lebih mudah memahami materi melalui **video** dibandingkan teks.
+
+Daripada sekadar menambahkan tombol "generate video", aku melihat ini sebagai problem baru yang layak dieksplorasi lebih jauh.
+
+Bagaimana konsep divisualisasikan? Bagaimana narasi dan scene tetap sinkron? Bagaimana membuat video explanation yang konsisten dan programmable?
+
+Pertanyaan-pertanyaan itu akhirnya melahirkan project lain: **Lana**.
+
+```text id="ju32my"
+Ngerti.in
+   ↓
+User feedback
+   ↓
+"Video lebih mudah dipahami"
+   ↓
+New problem
+   ↓
+Lana
+```
+
+Aku suka bagian ini karena menunjukkan bagaimana satu produk bisa melahirkan problem baru yang menarik untuk diselesaikan.
+
+{/* Image: Ngerti.in → Lana */}
+
+## What's Next
+
+Ngerti.in masih terus berkembang.
+
+Ke depannya aku ingin menambahkan lebih banyak AI agents yang punya peran jelas dalam learning journey: menemukan knowledge gap, memberikan resource tambahan, atau menyesuaikan learning path berdasarkan progress user.
+
+Aku tidak tertarik menambahkan agent hanya karena sedang tren.
+
+Kalau sebuah agent tidak membuat pengalaman belajar lebih baik, fitur itu tidak perlu ada.
+
+Ngerti.in mengajarkanku bahwa engineering decision yang baik seharusnya mengikuti problem.
+
+NestJS kupilih karena codebase butuh struktur.
+
+LangGraph kupilih karena workflow butuh state dan orchestration.
+
+Adaptive learning muncul karena setiap user belajar dengan cara yang berbeda.
+
+Dan Lana lahir karena feedback menunjukkan bahwa teks bukan selalu medium terbaik untuk belajar.
+
+Project ini dimulai dari hackathon 24 jam, tapi justru setelah hackathon selesai, bagian paling menariknya baru benar-benar dimulai.

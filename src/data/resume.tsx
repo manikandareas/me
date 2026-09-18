@@ -17,8 +17,7 @@ export const DATA = {
   locationLink: "https://www.google.com/maps/place/Samarinda",
   description:
     "AI Engineer based in Samarinda, Indonesia, focused on building AI-powered applications that solve real-world problems through practical automation and thoughtful user experiences.",
-  summary:
-    "I'm an AI Engineer and final-year Informatics Multimedia student who started learning programming in 2020 and began actively building products and joining hackathons in 2024. I enjoy experimenting with AI-powered applications, especially AI agents and full-stack systems that turn complex workflows into useful, approachable experiences.\n\nMy work sits at the intersection of AI engineering, product development, and user experience. I like exploring new technologies, thinking critically about how they should be applied, and pushing ideas beyond technical demos into products people can actually use. I am particularly interested in automation: finding ways AI can reduce repetitive work without making the user experience feel complicated or opaque.\n\nBecause the AI ecosystem moves quickly, I treat adaptability as a core engineering skill. I continuously evaluate new models, frameworks, and patterns, then apply the ones that meaningfully improve reliability, capability, or UX. Alongside independent projects, I have worked in teams through an AI engineering internship and multiple hackathons, building and shipping products under real constraints.",
+  summary:"I'm an AI Engineer who enjoys turning small, specific problems into useful products. Most of my work focuses on AI-powered web and mobile applications, especially AI agents and automation systems, while keeping the experience simple, clear, and practical for users.\n\nI usually start with a narrow problem, test different approaches, and gradually shape the idea into something that works beyond a technical demo. A big part of how I learn comes from experimentation, whether through side projects, research, internships, or hackathons.\n\nI'm particularly interested in how AI can reduce repetitive work without making products feel complicated or opaque. Because the AI ecosystem moves quickly, I continuously evaluate new models, frameworks, and patterns, then use the ones that meaningfully improve reliability, capability, or user experience.\n\nOutside of building products, I enjoy playing badminton, watching Korean dramas, and occasionally turning random ideas into my next side project.",
   avatarUrl: "/vitomanik.webp",
   skills: [
     { name: "TypeScript", icon: Typescript },
@@ -86,7 +85,8 @@ export const DATA = {
       badges: [],
       location: "Remote",
       title: "AI Engineer Intern",
-      logoUrl: "https://eternoglobaltechnologies.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-with-text-2.b400f7df.png&w=384&q=75",
+      logoUrl:
+        "https://eternoglobaltechnologies.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-with-text-2.b400f7df.png&w=384&q=75",
       start: "Jan 2026",
       end: "May 2026",
       description:
@@ -128,18 +128,24 @@ export const DATA = {
         "Cloudflare",
       ],
       links: [
-         {
+        {
           type: "Website",
           href: "https://ngertiin.whoismanik.dev",
           icon: <Icons.globe className="size-3" />,
         },
+        {
+          type: "Blog",
+          href: "/blog/ngertiin",
+          icon: <Icons.globe className="size-3" />,
+        },
       ],
       image: "/projects/ngertiin.webp",
-      video: "https://ngertiin-assets.whoismanik.dev/videos/ngertiin-linkedin-post.mp4",
+      video:
+        "https://ngertiin-assets.whoismanik.dev/videos/ngertiin-linkedin-post.mp4",
     },
     {
       title: "FMS Chat",
-      href: "#",
+      href: "/blog/fms-chat",
       dates: "2026",
       active: true,
       description:
@@ -158,13 +164,14 @@ export const DATA = {
         "OpenAI",
       ],
       links: [
-         {
+        {
           type: "Blog",
-          href: "https://news-app-git-main-manikxixis-projects.vercel.app/",
+          href: "/blog/fms-chat",
           icon: <Icons.globe className="size-3" />,
         },
       ],
       image: "/projects/fms-chat.webp",
+
       video: "",
     },
     {
@@ -182,7 +189,13 @@ export const DATA = {
         "LiveKit",
         "Gemini",
       ],
-      links: [],
+      links: [
+          {
+          type: "Source",
+          href: "https://github.com/manikandareas/technofest2026",
+          icon: <Icons.github className="size-3" />,
+        },
+      ],
       image: "/projects/pixelaid.webp",
       video: "",
     },
@@ -204,10 +217,15 @@ export const DATA = {
         "PostgreSQL",
       ],
       links: [
-         {
+        {
           type: "Source",
           href: "https://github.com/manikandareas/lana",
           icon: <Icons.github className="size-3" />,
+        },
+        {
+          type: "Blog",
+          href: "/blog/lana",
+          icon: <Icons.globe className="size-3" />,
         },
       ],
       image: "/projects/lana.png",
@@ -229,7 +247,7 @@ export const DATA = {
         "Convex RAG",
       ],
       links: [
-         {
+        {
           type: "Source",
           href: "https://github.com/manikandareas/genii",
           icon: <Icons.github className="size-3" />,
@@ -261,8 +279,6 @@ export const DATA = {
       image: "/projects/madia-blog.png",
       video: "",
     },
-   
-  
   ],
   hackathons: [
     {
@@ -271,7 +287,8 @@ export const DATA = {
       location: "Indonesia",
       description:
         "Participated in Bangkit Academy as a Mobile Development cohort member and collaborated in a team-based product development environment.",
-      image: "https://yt3.googleusercontent.com/0b3Ljhqw5VJpXwOaffzj5lwAfHHYa7fTfT32hjnZ3MMHyWu84IUfy4CTliMmY15f0k8i-wt7oA=s900-c-k-c0x00ffffff-no-rj",
+      image:
+        "https://yt3.googleusercontent.com/0b3Ljhqw5VJpXwOaffzj5lwAfHHYa7fTfT32hjnZ3MMHyWu84IUfy4CTliMmY15f0k8i-wt7oA=s900-c-k-c0x00ffffff-no-rj",
       links: [],
     },
     {
@@ -280,7 +297,8 @@ export const DATA = {
       location: "Indonesia",
       description:
         "Served as team lead and full-stack developer, coordinating the team while contributing directly to product development during the hackathon.",
-      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdu0ERxtb0ZtvMHu1imfXTeJPIjRdpebcemgQOwNY3_g&s=10",
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdu0ERxtb0ZtvMHu1imfXTeJPIjRdpebcemgQOwNY3_g&s=10",
       links: [],
     },
     {
@@ -289,7 +307,8 @@ export const DATA = {
       location: "Indonesia",
       description:
         "Served as team lead and full-stack developer, leading the team from ideation through implementation and final presentation.",
-      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4ITR3_VL0PoPKzVzYrXFyt-YNWfDEZ50CGk6mjh3kiOsqgJOXuGAm-wQI&s=10",
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4ITR3_VL0PoPKzVzYrXFyt-YNWfDEZ50CGk6mjh3kiOsqgJOXuGAm-wQI&s=10",
       links: [],
     },
     {
@@ -318,7 +337,8 @@ export const DATA = {
       location: "Indonesia",
       description:
         "Served as team lead and full-stack developer, guiding the team through rapid product development and competition delivery.",
-      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4ITR3_VL0PoPKzVzYrXFyt-YNWfDEZ50CGk6mjh3kiOsqgJOXuGAm-wQI&s=10",
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4ITR3_VL0PoPKzVzYrXFyt-YNWfDEZ50CGk6mjh3kiOsqgJOXuGAm-wQI&s=10",
       links: [],
     },
   ],

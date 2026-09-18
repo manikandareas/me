@@ -1,0 +1,200 @@
+---
+title: "FMS Chat: Membangun AI Agent untuk Data Fleet Management"
+publishedAt: "2026-09-17"
+summary: "Bagaimana aku meriset dan membangun AI agent untuk fleet management system dengan RAG berbasis semantic search agar query ke database besar tetap efisien, terkontrol, dan reliable."
+image: "/images/blog/fms-chat/cover.webp"
+---
+
+## Bagaimana Aku Membuat RAG untuk Database dengan Ratusan Tabel
+
+Salah satu tantangan paling menarik saat membangun FMS Chat bukan membuat AI agent yang bisa menulis SQL.
+
+Bagian tersulitnya justru adalah **memberikan konteks database yang tepat kepada agent**.
+
+Database fleet management yang aku gunakan memiliki **ratusan tabel**, masing-masing dengan fungsi dan relasi yang berbeda.
+
+Secara teori, aku bisa memberikan seluruh schema database ke model pada setiap request.
+
+Tapi pendekatan itu boros token, memperlambat reasoning, dan memaksa model membaca banyak informasi yang sebenarnya tidak relevan.
+
+Di sisi lain, kalau konteks yang diberikan terlalu sedikit, agent lebih mudah memilih tabel yang salah, menggunakan kolom yang tidak ada, atau menghasilkan query yang tidak sesuai dengan struktur database.
+
+Jadi pertanyaan yang ingin aku pecahkan adalah:
+
+**bagaimana caranya memberikan hanya konteks database yang dibutuhkan agent, tepat saat konteks itu dibutuhkan?**
+
+Jawabannya adalah membangun sebuah **database discovery layer berbasis RAG**.
+
+{/* Image: Diagram database discovery layer */}
+
+## Dari Internship Menjadi Eksperimen AI Agent
+
+Selama menjalani internship di [PT Eterno Global Technologies](https://eternoglobaltechnologies.com), aku melakukan riset, merancang, dan membangun **FMS Chat**, sebuah AI agent yang terhubung dengan database fleet management system.
+
+FMS Chat memungkinkan user bertanya langsung tentang kondisi fleet, performa operasional, sampai insight dari data pertambangan terbaru tanpa harus menelusuri banyak dashboard, laporan, atau tabel database secara manual.
+
+Hal yang membuat project ini menarik adalah aku harus menyelesaikan dua masalah sekaligus:
+
+**memahami bagaimana operasi pertambangan bekerja di lapangan, sekaligus merancang bagaimana AI agent dapat berinteraksi dengan data operasional secara aman, efisien, dan reliable.**
+
+<MediaContainer
+  src="/images/blog/fms-chat/analisis.png"
+  alt="FMS Chat analisis antrian"
+/>
+
+## Memilih Framework Agent yang Tepat
+
+Sebelum menentukan arsitektur final, aku mencoba beberapa framework dan pendekatan agent:
+
+- AI SDK
+- LangChain
+- LangChain + LangGraph
+- Mastra
+- LangChain Deep Agents
+
+Aku tidak ingin memilih framework hanya karena sedang populer.
+
+Yang ingin aku cari adalah:
+
+**abstraksi mana yang paling cocok dengan kebutuhan FMS Chat?**
+
+Agent harus bisa menggunakan tools, melakukan reasoning dalam beberapa langkah, menjaga state, dan tetap fleksibel ketika request user tidak bisa ditangani oleh tools yang sudah tersedia.
+
+Dari proses ini aku belajar bahwa memilih framework AI bukan soal siapa yang punya fitur paling banyak, tapi soal **seberapa banyak kontrol yang kita butuhkan terhadap execution flow agent**.
+
+{/* Image: Perbandingan framework atau diagram arsitektur agent */}
+
+## RAG sebagai Database Discovery Layer
+
+Untuk setiap tabel penting, aku membuat metadata yang menjelaskan:
+
+- fungsi tabel,
+- jenis data yang disimpan,
+- operasi yang cocok dilakukan,
+- dan konteks penggunaannya di dalam fleet management system.
+
+Metadata tersebut kemudian diubah menjadi embedding dan disimpan di **Qdrant**.
+
+Ketika agent menerima request yang membutuhkan direct database query, agent tidak langsung membuat SQL.
+
+Ia terlebih dahulu melakukan semantic search untuk mencari tabel yang paling relevan dengan kebutuhan user.
+
+```text id="fmsrag01"
+User Request
+    ↓
+Agent
+    ↓
+Semantic Search
+    ↓
+Relevant Table Metadata
+    ↓
+Inspect Columns
+    ↓
+Generate SQL
+    ↓
+Fleet Management Database
+```
+
+Dengan pendekatan ini, model tidak perlu memahami ratusan tabel sekaligus.
+
+Ia hanya menerima beberapa tabel yang relevan untuk request saat itu.
+
+Hasilnya, query menjadi lebih fokus, penggunaan token lebih efisien, dan waktu reasoning juga lebih singkat.
+
+Dalam pengujian yang aku lakukan, pendekatan ini membantu menjaga tingkat keberhasilan generated query di **atas 90%**, terutama dengan mengurangi kegagalan akibat agent tidak memiliki konteks schema yang cukup.
+
+Buatku, insight terpenting dari bagian ini sederhana:
+
+**sistem AI yang baik bukan selalu tentang memberikan lebih banyak konteks, tapi memberikan konteks yang tepat.**
+
+## Tools Dulu, Query Database Sebagai Fallback
+
+Aku juga tidak ingin agent membuat SQL untuk semua request.
+
+Untuk kebutuhan yang sudah jelas dan sering digunakan, FMS Chat menggunakan predefined tools.
+
+Pendekatan ini lebih mudah dikontrol, lebih mudah divalidasi, dan hasilnya lebih predictable.
+
+Direct database query hanya digunakan sebagai **fallback** ketika tools yang ada tidak cukup untuk menjawab request user.
+
+```text id="fmstool01"
+User Request
+    ↓
+Can Existing Tool Handle It?
+    ↓
+Yes ─────────→ Execute Tool
+    │
+    No
+    ↓
+Retrieve Relevant Schema
+    ↓
+Generate Controlled Query
+    ↓
+Execute
+```
+
+Menurutku ini balance yang penting.
+
+Kalau ada jalur yang deterministic dan aman, aku lebih memilih jalur itu.
+
+Fleksibilitas agent baru digunakan ketika memang memberikan value.
+
+## Menjaga Query Tetap Terkontrol
+
+Memberikan AI agent kemampuan untuk membuat query langsung ke database tentu membawa risiko.
+
+Karena itu, generated query tidak boleh diperlakukan sebagai akses bebas.
+
+Sistem harus tetap membatasi operasi yang diperbolehkan, memvalidasi query, dan menjaga interaction tetap sesuai kebutuhan analitik.
+
+Tujuannya bukan membuat agent bebas melakukan apa saja.
+
+Tujuannya adalah membuat agent cukup fleksibel untuk menjawab pertanyaan yang belum memiliki dedicated tool, tanpa kehilangan kontrol terhadap database.
+
+## Belajar Domain Pertambangan
+
+Satu bagian yang tidak kalah penting dari project ini adalah memahami domain fleet management itu sendiri.
+
+Sebelum membangun FMS Chat, banyak istilah, relasi data, dan metrik operasional masih asing buatku.
+
+Tapi agent tidak bisa menjawab pertanyaan domain dengan baik kalau developer yang membangunnya sendiri tidak memahami konteks pertanyaan tersebut.
+
+Karena itu, proses engineering juga menjadi proses belajar domain.
+
+Aku perlu memahami bagaimana data fleet disusun, bagaimana performa operasional diukur, dan bagaimana berbagai entity di dalam sistem saling berhubungan.
+
+Pemahaman ini kemudian memengaruhi desain tools, metadata tabel, dan cara agent mencari konteks sebelum melakukan query.
+
+{/* Image: Diagram domain fleet management */}
+
+## Yang Aku Pelajari dari Project Ini
+
+FMS Chat membuatku sadar bahwa membangun AI agent bukan sekadar masalah LLM.
+
+Banyak keputusan terpenting justru datang dari system design.
+
+Aku harus memikirkan:
+
+- kapan agent memakai tool,
+- kapan agent boleh query langsung ke database,
+- seberapa banyak schema context yang perlu diberikan,
+- bagaimana menjaga token usage tetap efisien,
+- dan bagaimana mempertahankan fleksibilitas tanpa kehilangan kontrol.
+
+Project ini juga memperkuat satu prinsip yang sekarang sering kupakai saat membangun sistem AI:
+
+**agent menjadi lebih reliable ketika kebebasannya sengaja dibatasi.**
+
+Gunakan deterministic tools ketika memungkinkan.
+
+Ambil hanya konteks yang benar-benar dibutuhkan.
+
+Gunakan reasoning yang fleksibel hanya ketika fleksibilitas memang memberikan value.
+
+FMS Chat awalnya terlihat seperti eksperimen untuk menghubungkan AI agent dengan database fleet management.
+
+Tapi pada akhirnya, project ini menjadi eksplorasi yang jauh lebih dalam tentang agent architecture, retrieval, database reasoning, dan bagaimana sistem AI seharusnya berinteraksi dengan data operasional nyata.
+
+### Technologies
+
+Python, Next.js, FastAPI, TypeScript, Qwen, Qdrant, PostgreSQL, Docker, LangChain Deep Agents, LangChain, dan OpenAI.
