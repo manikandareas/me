@@ -69,13 +69,7 @@ export const DATA = {
         url: "mailto:me@whoismanik.dev",
         icon: Icons.email,
         navbar: false,
-      },
-      Instagram: {
-        name: "Instagram",
-        url: "https://instagram.com/manikandareas",
-        icon: Icons.instagram,
-        navbar: true,
-      },
+      }
     },
   },
   work: [
