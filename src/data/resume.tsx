@@ -127,7 +127,13 @@ export const DATA = {
         "S3",
         "Cloudflare",
       ],
-      links: [],
+      links: [
+         {
+          type: "Website",
+          href: "https://ngertiin.whoismanik.dev",
+          icon: <Icons.globe className="size-3" />,
+        },
+      ],
       image: "/projects/ngertiin.webp",
       video: "https://ngertiin-assets.whoismanik.dev/videos/ngertiin-linkedin-post.mp4",
     },
@@ -151,7 +157,13 @@ export const DATA = {
         "LangChain",
         "OpenAI",
       ],
-      links: [],
+      links: [
+         {
+          type: "Blog",
+          href: "https://news-app-git-main-manikxixis-projects.vercel.app/",
+          icon: <Icons.globe className="size-3" />,
+        },
+      ],
       image: "/projects/fms-chat.webp",
       video: "",
     },
@@ -227,29 +239,6 @@ export const DATA = {
       video: "",
     },
     {
-      title: "{ News } App",
-      href: "https://news-app-git-main-manikxixis-projects.vercel.app/",
-      dates: "2024",
-      active: true,
-      description:
-        "A news website with authentication and an article management dashboard for editors. Aggregates content from several major Indonesian media APIs.",
-      technologies: ["Next.js", "React.js", "TailwindCSS", "TypeScript"],
-      links: [
-        {
-          type: "Website",
-          href: "https://news-app-git-main-manikxixis-projects.vercel.app/",
-          icon: <Icons.globe className="size-3" />,
-        },
-        {
-          type: "Source",
-          href: "https://github.com/manikandareas/news-app",
-          icon: <Icons.github className="size-3" />,
-        },
-      ],
-      image: "/projects/news-app.png",
-      video: "",
-    },
-    {
       title: "Madia Blog",
       href: "https://madia.vitomanik.com/",
       dates: "2024",
@@ -272,59 +261,8 @@ export const DATA = {
       image: "/projects/madia-blog.png",
       video: "",
     },
-    {
-      title: "Nextjs Movies",
-      href: "https://movies-nextjs-coral.vercel.app/",
-      dates: "2023",
-      active: true,
-      description:
-        "A web application for browsing movies and TV series using a movie database API.",
-      technologies: ["Next.js", "TypeScript", "Tanstack Query", "TailwindCSS"],
-      links: [
-        {
-          type: "Website",
-          href: "https://movies-nextjs-coral.vercel.app/",
-          icon: <Icons.globe className="size-3" />,
-        },
-        {
-          type: "Source",
-          href: "https://github.com/manikandareas/movies-nextjs",
-          icon: <Icons.github className="size-3" />,
-        },
-      ],
-      image: "/projects/nextjs-movies.png",
-      video: "",
-    },
-    {
-      title: "Mini Media",
-      href: "https://akumanik.fun",
-      dates: "2023",
-      active: true,
-      description:
-        "A Twitter-inspired social media application built with Next.js, tRPC, Prisma, and Redux Toolkit.",
-      technologies: [
-        "Next.js",
-        "TypeScript",
-        "Redux Toolkit",
-        "tRPC",
-        "Prisma",
-        "TailwindCSS",
-      ],
-      links: [
-        {
-          type: "Website",
-          href: "https://akumanik.fun",
-          icon: <Icons.globe className="size-3" />,
-        },
-        {
-          type: "Source",
-          href: "https://github.com/manikandareas/mini-media",
-          icon: <Icons.github className="size-3" />,
-        },
-      ],
-      image: "/projects/mini-media.png",
-      video: "",
-    },
+   
+  
   ],
   hackathons: [
     {

@@ -8,7 +8,7 @@ export default function ProjectsSection() {
     return (
         <section
             id="projects"
-            className="relative md:left-1/2 md:w-[calc(100vw-3rem)] md:max-w-6xl md:-translate-x-1/2"
+            className="relative md:left-1/2 md:w-[calc(100vw-3rem)] md:max-w-4xl md:-translate-x-1/2"
         >
             <div className="flex min-h-0 flex-col gap-y-8">
                 <div className="flex flex-col gap-y-4 items-center justify-center">
@@ -34,7 +34,7 @@ export default function ProjectsSection() {
                         </p>
                     </div>
                 </div>
-                <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-5">
+                <div className="mx-auto grid w-full grid-cols-1 sm:grid-cols-2 gap-5">
                     {DATA.projects.map((project, id) => (
                         <BlurFade
                             key={project.title}
