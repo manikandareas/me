@@ -1,0 +1,15 @@
+.page {
+  --studio-section-space: clamp(8rem, 16vw, 16rem);
+  width: 100%;
+}
+
+:global(html):has(.page) {
+  scroll-padding-top: 6rem;
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :global(html):has(.page) {
+    scroll-behavior: auto;
+  }
+}

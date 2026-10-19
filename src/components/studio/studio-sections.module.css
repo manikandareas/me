@@ -1,0 +1,128 @@
+.process {
+  --step-size: 4rem;
+  padding: var(--studio-section-space) clamp(1.5rem, 6vw, 7rem);
+  scroll-margin-top: 2rem;
+}
+.processInner {
+  max-width: 90rem;
+  margin-inline: auto;
+}
+.processIntro {
+  text-align: center;
+  margin-bottom: clamp(3rem, 5vw, 4.5rem);
+}
+.processIntro h2 {
+  font-size: clamp(2rem, 3vw, 3rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+.processIntro > p {
+  max-width: 48ch;
+  margin: 1rem auto 0;
+  font-size: 0.9375rem;
+  line-height: 1.8;
+  color: var(--muted-foreground);
+  text-wrap: pretty;
+}
+.steps {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(1.5rem, 3vw, 3rem);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.steps::before {
+  content: "";
+  position: absolute;
+  inset: calc(var(--step-size) / 2) 0 auto;
+  border-top: 1px dashed var(--border);
+  pointer-events: none;
+}
+.steps li {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-width: 0;
+}
+.stepNumber {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: var(--step-size);
+  height: var(--step-size);
+  border: 1px solid var(--foreground);
+  background: var(--background);
+  font-size: 1.5rem;
+  font-weight: 500;
+  line-height: 1;
+  margin-bottom: 1.5rem;
+}
+.steps h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+  margin-bottom: 0.75rem;
+}
+.steps p {
+  max-width: 27ch;
+  margin-inline: auto;
+  font-size: 0.875rem;
+  line-height: 1.8;
+  color: var(--muted-foreground);
+  text-wrap: pretty;
+}
+@media (max-width: 767px) {
+  .process {
+    --step-size: 3rem;
+  }
+  .processIntro {
+    text-align: left;
+  }
+  .processIntro > p {
+    margin-inline: 0;
+    font-size: 0.875rem;
+  }
+  .steps {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .steps::before {
+    display: none;
+  }
+  .steps li {
+    flex-direction: row;
+    align-items: start;
+    gap: 1.5rem;
+    text-align: left;
+  }
+  .steps li:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    top: calc(var(--step-size) / 2);
+    bottom: calc(-2rem - var(--step-size) / 2);
+    left: calc(var(--step-size) / 2);
+    border-left: 1px dashed var(--border);
+    pointer-events: none;
+  }
+  .stepNumber {
+    position: relative;
+    font-size: 1.125rem;
+    margin-bottom: 0;
+  }
+  .steps h3 {
+    padding-top: 0.125rem;
+    margin-bottom: 0.5rem;
+  }
+  .steps p {
+    max-width: 48ch;
+    margin-inline: 0;
+  }
+}

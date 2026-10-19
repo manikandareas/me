@@ -1,0 +1,61 @@
+.section {
+  padding-inline: clamp(1rem, 4vw, 4rem);
+  padding-bottom: var(--studio-section-space);
+  scroll-margin-top: 2rem;
+}
+.panel {
+  max-width: 80rem;
+  margin-inline: auto;
+  padding: clamp(1.5rem, 3.5vw, 3rem);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 4vw, 4rem);
+  background: #0b0b0b;
+  color: #fafafa;
+  border-radius: 1.25rem;
+}
+.content { min-width: 0; padding-block: 0.5rem; }
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  color: #aaa;
+  font-size: 0.875rem;
+  margin-bottom: 1.75rem;
+}
+.content h2 {
+  font-size: clamp(2.25rem, 4vw, 3.75rem);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.045em;
+}
+.conversation {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  list-style: none;
+  padding: 0;
+  margin: 2.25rem 0;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+.conversation li { max-width: 87%; padding: 0.875rem 1.125rem; }
+.visitor { align-self: flex-end; background: #262626; border-radius: 1rem 1rem 0.25rem 1rem; }
+.reply { align-self: flex-start; background: #e9eee8; color: #202720; border-radius: 1rem 1rem 1rem 0.25rem; }
+.action { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.25rem; }
+.cta { min-height: 3.25rem; height: auto; padding: 0.875rem 1.25rem; border-radius: 0.625rem; background: #b5ef63; color: #17210d; font-size: 0.875rem; }
+.cta:hover { background: #a3df50; }
+.action p { color: #aaa; font-size: 0.75rem; line-height: 1.5; }
+.artwork { position: relative; min-width: 0; min-height: 100%; overflow: hidden; border-radius: 0.875rem; }
+.artwork img { object-fit: cover; object-position: center; }
+@media (max-width: 800px) {
+  .panel { grid-template-columns: 1fr; gap: 2.5rem; }
+  .content h2 { font-size: clamp(2.25rem, 7vw, 3.5rem); }
+  .artwork { aspect-ratio: 1; min-height: 0; }
+  .conversation { max-width: 34rem; }
+}
+@media (max-width: 380px) {
+  .panel { padding: 1.25rem; }
+  .conversation { font-size: 0.875rem; }
+  .conversation li { max-width: 94%; }
+}

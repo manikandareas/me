@@ -1,0 +1,110 @@
+.button {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  border: 0;
+  background: transparent;
+  color: var(--foreground);
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.18s ease-out;
+}
+.sm {
+  min-height: 40px;
+  padding: 0.625rem 1rem;
+}
+.md {
+  min-height: 48px;
+  padding: 0.875rem 1.5rem;
+}
+.lg {
+  min-height: 56px;
+  padding: 1rem 1.75rem;
+}
+.sketch {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: visible;
+  pointer-events: none;
+}
+.primary {
+  color: oklch(0.36 0.075 155);
+}
+.paper {
+  fill: transparent;
+}
+.primary .paper {
+  fill: oklch(0.95 0.025 135);
+}
+.secondary .paper {
+  fill: var(--muted);
+}
+.outline .hatch,
+.ghost .hatch {
+  opacity: 0;
+}
+.ghost .outline {
+  opacity: 0;
+}
+.ghost:hover .outline {
+  opacity: 1;
+}
+.button:hover:not([aria-disabled="true"]) {
+  transform: rotate(-1deg) translateY(-1px);
+}
+.button:hover .hatch {
+  opacity: 0.6;
+}
+.button:active:not([aria-disabled="true"]) {
+  transform: translateY(1px);
+}
+.button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 6px;
+  border-radius: 2px;
+}
+.button[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.animated .outline path {
+  stroke-dasharray: 1;
+  animation: sketch-in 0.65s ease-out both;
+}
+.animated .outline path:last-child {
+  animation-delay: 0.12s;
+}
+@keyframes sketch-in {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
+  }
+  .animated .outline path {
+    animation: none;
+  }
+  .button:hover:not([aria-disabled="true"]) {
+    transform: none;
+  }
+}

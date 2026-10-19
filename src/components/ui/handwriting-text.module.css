@@ -1,0 +1,33 @@
+.word {
+  display: inline-block;
+  vertical-align: middle;
+}
+.stroke {
+  stroke-dasharray: 1;
+  animation: trace var(--write-duration) ease-out both;
+}
+.ink {
+  animation: ink 0.45s ease-out both;
+}
+@keyframes trace {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes ink {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stroke,
+  .ink {
+    animation: none;
+  }
+}

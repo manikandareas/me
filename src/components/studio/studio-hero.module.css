@@ -1,0 +1,79 @@
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  background: var(--background);
+  padding: clamp(5rem, 12svh, 8rem) 1.5rem 1.5rem;
+}
+.grid {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 130px;
+  background-image: radial-gradient(var(--border) 1px, transparent 1px);
+  background-size: 6px 6px;
+  mask-image: linear-gradient(black, transparent);
+  pointer-events: none;
+}
+.content {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  text-align: center;
+  padding-bottom: 3rem;
+}
+.title {
+  font-family: inherit;
+  font-size: clamp(2rem, 3.5vw, 3.5rem);
+  line-height: 1.22;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  width: 100%;
+  text-wrap: balance;
+  max-width: 52rem;
+}
+.titleLine {
+  display: block;
+}
+.handwriting {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 1.4em;
+  margin-top: 1rem;
+  width: 100%;
+  color: oklch(0.43 0.09 155);
+}
+.description {
+  font-size: 0.9375rem;
+  line-height: 1.8;
+  color: var(--muted-foreground);
+  margin-top: 2rem;
+  max-width: 35rem;
+  text-wrap: pretty;
+}
+.actions {
+  margin-top: 2rem;
+}
+.scroll {
+  flex-shrink: 0;
+  position: relative;
+}
+@media (max-width: 640px) {
+  .hero {
+    padding-top: 5rem;
+  }
+  .title {
+    font-size: clamp(1.75rem, 6.3vw, 2.5rem);
+    line-height: 1.25;
+  }
+  .description {
+    font-size: 0.875rem;
+  }
+}
