@@ -1,5 +1,9 @@
 .page {
-  --studio-section-space: clamp(8rem, 16vw, 16rem);
+  --studio-section-space: clamp(8rem, 14vw, 14rem);
+  display: flex;
+  flex-direction: column;
+  gap: var(--studio-section-space);
+  padding-bottom: var(--studio-section-space);
   width: 100%;
 }
 

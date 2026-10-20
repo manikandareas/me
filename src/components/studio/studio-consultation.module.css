@@ -1,6 +1,5 @@
 .section {
   padding-inline: clamp(1rem, 4vw, 4rem);
-  padding-bottom: var(--studio-section-space);
   scroll-margin-top: 2rem;
 }
 .panel {

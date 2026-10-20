@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+import { CrowdCanvas } from "@/components/ui/crowd-canvas";
 import SketchButton from "@/components/ui/sketch-button";
 import { HandwritingText } from "@/components/ui/handwriting-text";
 import { ArrowUpRight } from "lucide-react";
@@ -7,6 +9,7 @@ import styles from "./studio-hero.module.css";
 import { STUDIO_WHATSAPP } from "./studio-contact";
 
 export function StudioHero() {
+  const [crowdPaused, setCrowdPaused] = useState(false);
   return (
     <section id="beranda" aria-labelledby="studio-heading" className={styles.hero}>
       <div aria-hidden="true" className={styles.grid} />
@@ -36,8 +39,7 @@ export function StudioHero() {
         </h1>
         <p className={styles.description}>
           Dari produk digital, sistem bisnis, hingga solusi untuk pekerjaan
-          sehari-hari. Apa pun idenya, kita cari cara untuk mewujudkannya
-          bareng.
+          sehari-hari. Apa pun idenya, kita cari cara untuk mewujudkannya.
         </p>
         <div className={styles.actions}>
           <SketchButton asChild size="lg" seed={42} animate={false}>
@@ -47,6 +49,9 @@ export function StudioHero() {
             </a>
           </SketchButton>
         </div>
+      </div>
+      <div className={styles.crowd}>
+        <CrowdCanvas src="/images/studio/peeps/all-peeps.webp" paused={crowdPaused} className={styles.canvas} />
       </div>
       <div className={styles.scroll}>
         <a

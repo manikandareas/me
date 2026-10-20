@@ -1,6 +1,6 @@
 .process {
   --step-size: 4rem;
-  padding: var(--studio-section-space) clamp(1.5rem, 6vw, 7rem);
+  padding-inline: clamp(1.5rem, 6vw, 7rem);
   scroll-margin-top: 2rem;
 }
 .processInner {

@@ -1,3 +1,4 @@
+import { StudioInstitutions } from "@/components/studio/studio-institutions";
 import { StudioHero } from "@/components/studio/studio-hero";
 import { StudioHeader } from "@/components/studio/studio-header";
 import { StudioFooter } from "@/components/studio/studio-footer";
@@ -33,6 +34,7 @@ export default function StudioPage() {
       <StudioHeader />
       <main aria-labelledby="studio-heading" className={styles.page}>
         <StudioHero />
+        <StudioInstitutions />
         <StudioServices />
         <StudioProcess />
         <StudioAbout />

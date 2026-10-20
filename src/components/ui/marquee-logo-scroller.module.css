@@ -1,0 +1,84 @@
+.section {
+  width: 100%;
+  overflow: hidden;
+  color: var(--foreground);
+  background: var(--background);
+}
+.header {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  align-items: start;
+  gap: 2rem;
+  max-width: 90rem;
+  margin: 0 auto 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+  width: calc(100% - 2 * clamp(1.5rem, 6vw, 7rem));
+}
+.header h2 {
+  max-width: 20ch;
+  font-size: clamp(2rem, 3vw, 3rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -.035em;
+  text-wrap: balance;
+}
+.header p {
+  max-width: 43ch;
+  justify-self: end;
+  font-size: .9375rem;
+  line-height: 1.8;
+  color: var(--muted-foreground);
+  text-wrap: pretty;
+}
+.viewport {
+  width: 100%;
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+.track {
+  display: flex;
+  width: max-content;
+  padding-block: 1rem;
+  animation: studio-institution-marquee var(--marquee-duration) linear infinite;
+}
+.track[data-paused="true"], .viewport:hover .track { animation-play-state: paused; }
+.group {
+  display: flex;
+  gap: 1rem;
+  min-width: 100vw;
+  justify-content: space-around;
+  padding-right: 1rem;
+  list-style: none;
+  margin: 0;
+}
+.card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 10rem;
+  height: 6rem;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: .5rem;
+  background: color-mix(in srgb, var(--secondary) 70%, transparent);
+}
+.image { position: relative; width: 8rem; height: 4.5rem; object-fit: contain; }
+.tint { position: absolute; inset: 0; opacity: 0; transform: scale(1.5); transition: opacity 700ms ease-out, transform 700ms ease-out; }
+.controls { display: flex; justify-content: flex-end; padding-inline: clamp(1.5rem, 6vw, 7rem); margin-top: 1rem; }
+.controls button { font-size: .75rem; color: var(--muted-foreground); padding: .5rem; cursor: pointer; border-radius: .25rem; }
+.controls button:focus-visible { outline: 2px solid var(--foreground); outline-offset: 3px; }
+@keyframes studio-institution-marquee { to { transform: translateX(-50%); } }
+@media (hover: hover) and (pointer: fine) { .card:hover .tint { opacity: 1; transform: scale(1); } }
+@media (max-width: 640px) {
+  .header { grid-template-columns: 1fr; gap: 1rem; }
+  .header p { justify-self: start; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .track { animation: none; width: 100%; }
+  .group { flex-wrap: wrap; justify-content: center; min-width: 0; width: 100%; padding: 0 1.5rem; }
+  .group[aria-hidden="true"], .card[aria-hidden="true"], .controls { display: none; }
+  .viewport { mask-image: none; }
+  .tint { transition: none; transform: none; }
+}
