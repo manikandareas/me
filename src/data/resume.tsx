@@ -100,6 +100,38 @@ export const DATA = {
   ],
   projects: [
     {
+      title: "MagangHub Explorer",
+      href: "https://maganghub.ngerti.in/",
+      dates: "2026",
+      active: true,
+      description:
+        "An independent explorer for 27,667 Indonesian internship opportunities, with over 400 likes and 14,000 views on its launch post on Threads. I built hybrid keyword and semantic search, location and education filters, saved jobs, and a public API that AI assistants can use to find relevant openings. Applications stay on the official Kemnaker portal.",
+      technologies: [
+        "Next.js",
+        "React",
+        "TypeScript",
+        "TailwindCSS",
+        "PostgreSQL",
+        "pgvector",
+        "Neon",
+        "OpenRouter",
+      ],
+      links: [
+        {
+          type: "Website",
+          href: "https://maganghub.ngerti.in/",
+          icon: <Icons.globe className="size-3" />,
+        },
+        {
+          type: "Threads",
+          href: "https://www.threads.com/share/Djybv4uJr/",
+          icon: <Icons.globe className="size-3" />,
+        },
+      ],
+      image: "/projects/maganghub.webp",
+      video: "",
+    },
+    {
       title: "Ngertiin",
       href: "https://ngertiin.whoismanik.dev",
       dates: "2026",
