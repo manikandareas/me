@@ -86,6 +86,19 @@ export const DATA = {
       description:
         "Researched, designed, and built FMS Chat, an AI agent connected to a fleet management system database. The system enables users to explore fleet conditions, operational performance, and deeper insights from recent mining data through natural-language interaction. I also built a secure RAG fallback that generates efficient database queries when existing tools cannot handle a request, while maintaining controlled and reliable access across edge cases. The internship also gave me hands-on exposure to real coal mining operations and the challenge of translating complex operational data into an accessible AI experience.",
     },
+    {
+      company: "Dicoding Indonesia (Bangkit Capstone)",
+      href: "https://www.dicoding.com/",
+      badges: [],
+      location:
+        "Remote · Sukaluyu, Cibeunying Kaler, Kota Bandung, Jawa Barat, Indonesia",
+      title: "Mobile Developer",
+      logoUrl: "/work/dicoding.png",
+      start: "Sep 2024",
+      end: "Dec 2024",
+      description:
+        "Selected from hundreds of participants to join Team C242-EL02 in the Company Capstone Project for Bangkit Academy 2024 Batch 2, in collaboration with Dicoding Indonesia. As a Mobile Developer, I helped build CodiLeap, an AI-powered technology learning platform offering a personalized, gamified experience across Machine Learning, Cloud Computing, and Mobile Development. The platform provides learning recommendations tailored to users' interests and learning styles, instant AI-powered Q&A, learning progress and achievement tracking, and integration with Dicoding.",
+    },
   ],
   education: [
     {
